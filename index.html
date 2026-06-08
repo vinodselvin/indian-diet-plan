@@ -108,22 +108,23 @@ th{
 
     <h3 id="welcome"></h3>
 </div>
-    <br><br><br>
+<br>
+    <h3 align="left">My Diet Dashboard</h3>
     <div class="stats-grid">
 
     <div class="stat-card">
         <h4>Current Weight</h4>
-        <h2 id="currentWeight">--</h2>
+        <h2 id="currentWeight">0</h2>
     </div>
 
     <div class="stat-card">
         <h4>Starting Weight</h4>
-        <h2 id="startingWeight">--</h2>
+        <h2 id="startingWeight">0</h2>
     </div>
 
     <div class="stat-card">
         <h4>Total Lost</h4>
-        <h2 id="weightLost">--</h2>
+        <h2 id="weightLost">0</h2>
     </div>
 
     <div class="stat-card">
@@ -147,6 +148,7 @@ th{
 </div>
 
 <canvas id="weightChart"></canvas>
+<br><br></be>
 <label>Select Day</label>
 <select id="daySelect"></select>
 
@@ -161,19 +163,6 @@ th{
     <label>Bloating (0-10)</label>
     <input type="number" min="0" max="10" id="bloating">
 
-    <label>
-        <input type="checkbox" id="gas">
-        Feeling Gas Today?
-    </label><br>
-
-    <label>Stool</label>
-    <select id="stool">
-        <option value="">Select</option>
-        <option>Normal</option>
-        <option>Soft</option>
-        <option>Loose</option>
-    </select>
-
     <button onclick="saveData()">Save Today's Data</button>
 </div>
     <div class="card">
@@ -185,8 +174,6 @@ th{
                 <th>Date</th>
                 <th>Weight</th>
                 <th>Bloating</th>
-                <th>Gas</th>
-                <th>Stool</th>
             </tr>
         </thead>
 
@@ -392,8 +379,6 @@ function saveData() {
         date: today,
         weight: document.getElementById("weight").value,
         bloating: document.getElementById("bloating").value,
-        gas: document.getElementById("gas").checked ? "Yes" : "No",
-        stool: document.getElementById("stool").value
     };
 
     let history =
@@ -449,8 +434,6 @@ function saveData() {
                 <td>${item.date}</td>
                 <td>${item.weight}</td>
                 <td>${item.bloating}</td>
-                <td>${item.gas}</td>
-                <td>${item.stool}</td>
             </tr>
         `;
     });
@@ -463,8 +446,6 @@ function loadData(day){
     if(!saved){
         document.getElementById("weight").value="";
         document.getElementById("bloating").value="";
-        document.getElementById("gas").checked=false;
-        document.getElementById("stool").value="";
         return;
     }
 
@@ -472,8 +453,6 @@ function loadData(day){
 
     document.getElementById("weight").value=data.weight || "";
     document.getElementById("bloating").value=data.bloating || "";
-    document.getElementById("gas").checked=data.gas || false;
-    document.getElementById("stool").value=data.stool || "";
 }
 
 daySelect.addEventListener("change",()=>{
