@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My Diet Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
@@ -67,6 +68,27 @@ th{
     background:#28a745;
     color:#fff;
 }
+    .stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:15px;
+    margin:20px 0;
+}
+
+.stat-card{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+#weightChart{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    margin-top:20px;
+}
 </style>
 </head>
 <body>
@@ -87,6 +109,44 @@ th{
     <h3 id="welcome"></h3>
 </div>
     <br><br><br>
+    <div class="stats-grid">
+
+    <div class="stat-card">
+        <h4>Current Weight</h4>
+        <h2 id="currentWeight">--</h2>
+    </div>
+
+    <div class="stat-card">
+        <h4>Starting Weight</h4>
+        <h2 id="startingWeight">--</h2>
+    </div>
+
+    <div class="stat-card">
+        <h4>Total Lost</h4>
+        <h2 id="weightLost">--</h2>
+    </div>
+
+    <div class="stat-card">
+        <h4>Average Bloating</h4>
+        <h2 id="avgBloating">--</h2>
+    </div>
+
+</div>
+    <div class="card">
+    <h3>📅 Monthly Summary</h3>
+
+    <p>
+        Days Logged:
+        <span id="daysLogged">0</span>
+    </p>
+
+    <p>
+        Average Weight:
+        <span id="avgWeight">0</span>
+    </p>
+</div>
+
+<canvas id="weightChart"></canvas>
 <label>Select Day</label>
 <select id="daySelect"></select>
 
@@ -135,6 +195,99 @@ th{
 </div>
 
 <script>
+    let chart;
+
+function updateDashboard() {
+
+    const history =
+        JSON.parse(
+            localStorage.getItem("diet-history")
+        ) || [];
+
+    if (!history.length) return;
+
+    const weights = history
+        .filter(x => x.weight)
+        .map(x => Number(x.weight));
+
+    const bloatingValues = history
+        .filter(x => x.bloating !== "")
+        .map(x => Number(x.bloating));
+
+    const startWeight = weights[0];
+    const currentWeight =
+        weights[weights.length - 1];
+
+    const lost =
+        (startWeight - currentWeight)
+        .toFixed(1);
+
+    const avgBloating =
+        bloatingValues.length
+        ? (
+            bloatingValues.reduce(
+                (a,b)=>a+b,0
+            ) / bloatingValues.length
+          ).toFixed(1)
+        : "-";
+
+    document.getElementById(
+        "startingWeight"
+    ).innerText = startWeight;
+
+    document.getElementById(
+        "currentWeight"
+    ).innerText = currentWeight;
+
+    document.getElementById(
+        "weightLost"
+    ).innerText =
+        lost + " kg";
+
+    document.getElementById(
+        "avgBloating"
+    ).innerText =
+        avgBloating;
+
+    const labels =
+        history.map(x => x.date);
+
+    if(chart){
+        chart.destroy();
+    }
+
+    chart = new Chart(
+        document.getElementById(
+            "weightChart"
+        ),
+        {
+            type:"line",
+            data:{
+                labels,
+                datasets:[{
+                    label:"Weight",
+                    data:weights,
+                    tension:.3
+                }]
+            }
+        }
+    );
+    document.getElementById(
+    "daysLogged"
+).innerText =
+    history.length;
+
+const avgWeight =
+(
+    weights.reduce((a,b)=>a+b,0)
+    / weights.length
+).toFixed(1);
+
+document.getElementById(
+    "avgWeight"
+).innerText =
+    avgWeight + " kg";
+}
 let name = localStorage.getItem(
     "diet-user-name"
 );
@@ -204,6 +357,7 @@ const plans = {
 
 const daySelect = document.getElementById("daySelect");
 loadHistory();
+    updateDashboard();
 Object.keys(plans).forEach(day=>{
     const option = document.createElement("option");
     option.value = day;
@@ -264,6 +418,7 @@ function saveData() {
     );
 
     loadHistory();
+    updateDashboard();
 
     alert("Saved");
 }
