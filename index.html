@@ -1,145 +1,291 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Diet Planner</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 20px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Diet Tracker</title>
 
-        select {
-            padding: 10px;
-            width: 100%;
-            font-size: 16px;
-        }
+<style>
+body{
+    font-family:Arial,sans-serif;
+    max-width:700px;
+    margin:auto;
+    padding:15px;
+    background:#f4f4f4;
+}
 
-        .card {
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            display: none;
-        }
+h1{
+    text-align:center;
+}
 
-        h3 {
-            margin-top: 0;
-        }
+select,input,button{
+    width:100%;
+    padding:10px;
+    margin:5px 0;
+    box-sizing:border-box;
+}
 
-        .meal {
-            margin-bottom: 12px;
-        }
+.card{
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+    margin-top:15px;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
 
-        .label {
-            font-weight: bold;
-        }
-    </style>
+.meal{
+    margin-bottom:10px;
+}
+
+label{
+    font-weight:bold;
+}
+
+button{
+    background:#28a745;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+</style>
 </head>
 <body>
 
-    <h1>🥗 Weekly Diet Plan</h1>
+<h1>🥗 Diet Tracker</h1>
+<div class="card">
+    <label>Your Name</label>
+    <input
+        type="text"
+        id="userName"
+        placeholder="Enter your name"
+    >
 
-    <select id="daySelect">
-        <option value="">Select Day</option>
-        <option value="monday">Monday</option>
-        <option value="tuesday">Tuesday (Veg)</option>
-        <option value="wednesday">Wednesday</option>
-        <option value="thursday">Thursday</option>
-        <option value="friday">Friday (Veg)</option>
-        <option value="saturday">Saturday</option>
-        <option value="sunday">Sunday</option>
+    <button onclick="saveName()">
+        Save Name
+    </button>
+
+    <h3 id="welcome"></h3>
+</div>
+<label>Select Day</label>
+<select id="daySelect"></select>
+
+<div id="planCard" class="card"></div>
+
+<div class="card">
+    <h3>📊 Daily Tracking</h3>
+
+    <label>Weight (kg)</label>
+    <input type="number" id="weight">
+
+    <label>Bloating (0-10)</label>
+    <input type="number" min="0" max="10" id="bloating">
+
+    <label>
+        <input type="checkbox" id="gas">
+        Gas Today
+    </label>
+
+    <label>Stool</label>
+    <select id="stool">
+        <option value="">Select</option>
+        <option>Normal</option>
+        <option>Soft</option>
+        <option>Loose</option>
     </select>
 
-    <div id="schedule" class="card"></div>
+    <button onclick="saveData()">Save Today's Data</button>
+</div>
 
-    <script>
-        const plans = {
-            monday: {
-                breakfast: "4 Idli + Sambar",
-                lunch: "Rice + Chicken Curry + Veg",
-                evening: "Coffee + Banana",
-                dinner: "3 Chapati + Egg Curry"
-            },
-            tuesday: {
-                breakfast: "3 Idli + Sambar",
-                lunch: "Rice + Dal + Veg",
-                evening: "Roasted Chana",
-                dinner: "3 Chapati + Moong Dal + Veg"
-            },
-            wednesday: {
-                breakfast: "2 Dosa + 3 Eggs",
-                lunch: "Rice + Chicken Curry + Veg",
-                evening: "Coffee",
-                dinner: "3 Chapati + Egg Curry"
-            },
-            thursday: {
-                breakfast: "Upma + 2 Eggs",
-                lunch: "Rice + Fish Curry + Veg",
-                evening: "Banana",
-                dinner: "Chicken Soup + 2 Chapati"
-            },
-            friday: {
-                breakfast: "2 Dosa + Sambar",
-                lunch: "Rice + Sambar + Veg",
-                evening: "Sprouts",
-                dinner: "3 Chapati + Dal + Veg"
-            },
-            saturday: {
-                breakfast: "4 Idli + Sambar",
-                lunch: "Rice + Fish/Chicken + Veg",
-                evening: "Coconut Water",
-                dinner: "3 Chapati + Egg Curry"
-            },
-            sunday: {
-                breakfast: "3 Idli + Omelette",
-                lunch: "Small Chicken Biryani + Salad",
-                evening: "Coffee",
-                dinner: "Soup + 2 Chapati"
-            }
-        };
+<script>
 
-        document
-            .getElementById("daySelect")
-            .addEventListener("change", function () {
-                const day = this.value;
-                const schedule = document.getElementById("schedule");
+const plans = {
+    monday:{
+        breakfast:"4 Idli + Sambar",
+        lunch:"Rice + Chicken Curry + Veg",
+        evening:"Coffee + Banana",
+        dinner:"3 Chapati + Egg Curry"
+    },
+    tuesday:{
+        breakfast:"3 Idli + Sambar",
+        lunch:"Rice + Dal + Veg",
+        evening:"Roasted Chana",
+        dinner:"3 Chapati + Moong Dal + Veg"
+    },
+    wednesday:{
+        breakfast:"2 Dosa + 3 Eggs",
+        lunch:"Rice + Chicken Curry + Veg",
+        evening:"Coffee",
+        dinner:"3 Chapati + Egg Curry"
+    },
+    thursday:{
+        breakfast:"Upma + 2 Eggs",
+        lunch:"Rice + Fish Curry + Veg",
+        evening:"Banana",
+        dinner:"Chicken Soup + 2 Chapati"
+    },
+    friday:{
+        breakfast:"2 Dosa + Sambar",
+        lunch:"Rice + Sambar + Veg",
+        evening:"Sprouts",
+        dinner:"3 Chapati + Dal + Veg"
+    },
+    saturday:{
+        breakfast:"4 Idli + Sambar",
+        lunch:"Rice + Fish/Chicken + Veg",
+        evening:"Coconut Water",
+        dinner:"3 Chapati + Egg Curry"
+    },
+    sunday:{
+        breakfast:"3 Idli + Omelette",
+        lunch:"Small Chicken Biryani + Salad",
+        evening:"Coffee",
+        dinner:"Soup + 2 Chapati"
+    }
+};
 
-                if (!day) {
-                    schedule.style.display = "none";
-                    return;
-                }
+const daySelect = document.getElementById("daySelect");
 
-                const p = plans[day];
+Object.keys(plans).forEach(day=>{
+    const option = document.createElement("option");
+    option.value = day;
+    option.textContent =
+        day.charAt(0).toUpperCase() + day.slice(1);
+    daySelect.appendChild(option);
+});
 
-                schedule.innerHTML = `
-                    <h3>${day.charAt(0).toUpperCase() + day.slice(1)}</h3>
+function showPlan(day){
 
-                    <div class="meal">
-                        <span class="label">🌅 Breakfast:</span>
-                        ${p.breakfast}
-                    </div>
+    const plan = plans[day];
 
-                    <div class="meal">
-                        <span class="label">🍛 Lunch:</span>
-                        ${p.lunch}
-                    </div>
+    document.getElementById("planCard").innerHTML = `
+        <h2>${day.toUpperCase()}</h2>
 
-                    <div class="meal">
-                        <span class="label">☕ Evening:</span>
-                        ${p.evening}
-                    </div>
+        <div class="meal">🌅 <b>Breakfast:</b> ${plan.breakfast}</div>
+        <div class="meal">🍛 <b>Lunch:</b> ${plan.lunch}</div>
+        <div class="meal">☕ <b>Evening:</b> ${plan.evening}</div>
+        <div class="meal">🌙 <b>Dinner:</b> ${plan.dinner}</div>
+    `;
 
-                    <div class="meal">
-                        <span class="label">🌙 Dinner:</span>
-                        ${p.dinner}
-                    </div>
-                `;
+    loadData(day);
+}
 
-                schedule.style.display = "block";
-            });
-    </script>
+function saveData(){
+
+    const day = daySelect.value;
+
+    const data = {
+        weight:document.getElementById("weight").value,
+        bloating:document.getElementById("bloating").value,
+        gas:document.getElementById("gas").checked,
+        stool:document.getElementById("stool").value
+    };
+
+    localStorage.setItem(
+        "diet-"+day,
+        JSON.stringify(data)
+    );
+
+    alert("Saved");
+}
+
+function loadData(day){
+
+    const saved = localStorage.getItem("diet-"+day);
+
+    if(!saved){
+        document.getElementById("weight").value="";
+        document.getElementById("bloating").value="";
+        document.getElementById("gas").checked=false;
+        document.getElementById("stool").value="";
+        return;
+    }
+
+    const data = JSON.parse(saved);
+
+    document.getElementById("weight").value=data.weight || "";
+    document.getElementById("bloating").value=data.bloating || "";
+    document.getElementById("gas").checked=data.gas || false;
+    document.getElementById("stool").value=data.stool || "";
+}
+
+daySelect.addEventListener("change",()=>{
+    showPlan(daySelect.value);
+});
+
+// Auto select today's day
+const days = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday"
+];
+
+const today = days[new Date().getDay()];
+
+daySelect.value = today;
+showPlan(today);
+
+    function saveName() {
+
+    const name =
+        document.getElementById("userName")
+        .value
+        .trim();
+
+    if (!name) {
+        alert("Please enter your name");
+        return;
+    }
+
+    localStorage.setItem(
+        "diet-user-name",
+        name
+    );
+
+    updateWelcome();
+}
+
+    const savedName =
+    localStorage.getItem(
+        "diet-user-name"
+    );
+
+if (savedName) {
+    document.getElementById(
+        "userName"
+    ).value = savedName;
+}
+
+updateWelcome();
+
+function updateWelcome() {
+
+    const name =
+        localStorage.getItem(
+            "diet-user-name"
+        );
+
+    const welcome =
+        document.getElementById(
+            "welcome"
+        );
+
+    if (name) {
+        welcome.innerHTML =
+            `👋 Welcome, ${name}`;
+    } else {
+        welcome.innerHTML =
+            "👋 Welcome";
+    }
+}
+</script>
 
 </body>
 </html>
