@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diet Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        select {
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .card {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            display: none;
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+
+        .meal {
+            margin-bottom: 12px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🥗 Weekly Diet Plan</h1>
+
+    <select id="daySelect">
+        <option value="">Select Day</option>
+        <option value="monday">Monday</option>
+        <option value="tuesday">Tuesday (Veg)</option>
+        <option value="wednesday">Wednesday</option>
+        <option value="thursday">Thursday</option>
+        <option value="friday">Friday (Veg)</option>
+        <option value="saturday">Saturday</option>
+        <option value="sunday">Sunday</option>
+    </select>
+
+    <div id="schedule" class="card"></div>
+
+    <script>
+        const plans = {
+            monday: {
+                breakfast: "4 Idli + Sambar",
+                lunch: "Rice + Chicken Curry + Veg",
+                evening: "Coffee + Banana",
+                dinner: "3 Chapati + Egg Curry"
+            },
+            tuesday: {
+                breakfast: "3 Idli + Sambar",
+                lunch: "Rice + Dal + Veg",
+                evening: "Roasted Chana",
+                dinner: "3 Chapati + Moong Dal + Veg"
+            },
+            wednesday: {
+                breakfast: "2 Dosa + 3 Eggs",
+                lunch: "Rice + Chicken Curry + Veg",
+                evening: "Coffee",
+                dinner: "3 Chapati + Egg Curry"
+            },
+            thursday: {
+                breakfast: "Upma + 2 Eggs",
+                lunch: "Rice + Fish Curry + Veg",
+                evening: "Banana",
+                dinner: "Chicken Soup + 2 Chapati"
+            },
+            friday: {
+                breakfast: "2 Dosa + Sambar",
+                lunch: "Rice + Sambar + Veg",
+                evening: "Sprouts",
+                dinner: "3 Chapati + Dal + Veg"
+            },
+            saturday: {
+                breakfast: "4 Idli + Sambar",
+                lunch: "Rice + Fish/Chicken + Veg",
+                evening: "Coconut Water",
+                dinner: "3 Chapati + Egg Curry"
+            },
+            sunday: {
+                breakfast: "3 Idli + Omelette",
+                lunch: "Small Chicken Biryani + Salad",
+                evening: "Coffee",
+                dinner: "Soup + 2 Chapati"
+            }
+        };
+
+        document
+            .getElementById("daySelect")
+            .addEventListener("change", function () {
+                const day = this.value;
+                const schedule = document.getElementById("schedule");
+
+                if (!day) {
+                    schedule.style.display = "none";
+                    return;
+                }
+
+                const p = plans[day];
+
+                schedule.innerHTML = `
+                    <h3>${day.charAt(0).toUpperCase() + day.slice(1)}</h3>
+
+                    <div class="meal">
+                        <span class="label">🌅 Breakfast:</span>
+                        ${p.breakfast}
+                    </div>
+
+                    <div class="meal">
+                        <span class="label">🍛 Lunch:</span>
+                        ${p.lunch}
+                    </div>
+
+                    <div class="meal">
+                        <span class="label">☕ Evening:</span>
+                        ${p.evening}
+                    </div>
+
+                    <div class="meal">
+                        <span class="label">🌙 Dinner:</span>
+                        ${p.dinner}
+                    </div>
+                `;
+
+                schedule.style.display = "block";
+            });
+    </script>
+
+</body>
+</html>
