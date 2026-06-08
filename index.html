@@ -101,7 +101,28 @@ button:hover{
 </div>
 
 <script>
+let name = localStorage.getItem(
+    "diet-user-name"
+);
 
+if (!name) {
+
+    name = prompt(
+        "What is your name?"
+    );
+
+    if (name) {
+        localStorage.setItem(
+            "diet-user-name",
+            name
+        );
+    }
+}
+
+document.getElementById(
+    "welcome"
+).innerHTML =
+`👋 Welcome, ${name}`;
 const plans = {
     monday:{
         breakfast:"4 Idli + Sambar",
